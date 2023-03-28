@@ -10,7 +10,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use("/api/contacts", staffsRouter);
+app.use("/api/staffs", staffsRouter);
 app.use("/api/users", usersRouter);
 
 app.get("/", (req, res) => {
