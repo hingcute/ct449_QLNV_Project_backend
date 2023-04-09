@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const staffsRouter = require("./app/routes/staff.route");
 const usersRouter = require("./app/routes/user.route");
+const todosRouter = require("./app/routes/todo.route");
+
 const req = require("express/lib/request");
 const res = require("express/lib/response");
 const ApiError = require("./app/api-error");
@@ -12,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/staffs", staffsRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/todos", todosRouter);
 
 app.get("/", (req, res) => {
     res.json({ message: "Chào mừng đến với ứng dụng quản lý thông tin nhân sự!"});

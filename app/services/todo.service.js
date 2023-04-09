@@ -1,36 +1,33 @@
 const { ObjectId } = require("mongodb");
 
-class StaffService {
+class TodoService {
     constructor(client) {
-        this.staff = client.db().collection("staff");
+        this.todo = client.db().collection("todo");
     }
     // Định nghĩa các phương thức truy xuất CSDL sử dụng mongodb API
-    extractStaffData(payload) {
-        const staff = {
-            name: payload.name,
-            year: payload.year,
-            address: payload.address,
-            phone: payload.phone,
-            describe: payload.describe,
-            brief: payload.brief,
+    extractTodoData(payload) {
+        const todo = {
+            title: payload.title,
+            description: payload.description,
+            
         };
         // Remove undefined fields
-        Object.keys(staff).forEach(
-            (key) => staff[key] === undefined && delete staff[key]
+        Object.keys(todo).forEach(
+            (key) => todo[key] === undefined && delete todo[key]
         );
-        return staff
+        return todo
     }
     async create(payload) {
-        const staff = this.extractStaffData(payload);
-        const result = await this.staff.findOneAndUpdate(
-            staff,
-            { $set: { favorite: staff.favorite === true } },
+        const todo = this.extractTodoData(payload);
+        const result = await this.todo.findOneAndUpdate(
+            todo,
+            { $set: { favorite: todo.favorite === true } },
             { returnDocument: "after", upsert: true }
         );
         return result.value;
     }
     async find(filter) {
-        const cursor = await this.staff.find(filter);
+        const cursor = await this.todo.find(filter);
         return await cursor.toArray();
     }
     async findByName(name) {
@@ -39,7 +36,7 @@ class StaffService {
         });
     }
     async findById(id){
-        return await this.staff.findOne({
+        return await this.todo.findOne({
             _id: ObjectId.isValid(id)? new ObjectId(id) : null,
         });
     }
@@ -47,8 +44,8 @@ class StaffService {
         const filter = {
          _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
         };
-        const update = this.extractStaffData(payload);
-        const result = await this.staff.findOneAndUpdate(
+        const update = this.extractTodoData(payload);
+        const result = await this.todo.findOneAndUpdate(
             filter,
             { $set: update },
             { returnDocument: "after" }
@@ -56,7 +53,7 @@ class StaffService {
         return result.value;
     }
     async delete(id) {
-        const result = await this.staff.findOneAndDelete({
+        const result = await this.todo.findOneAndDelete({
              _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
         });
         return result.value;
@@ -65,8 +62,8 @@ class StaffService {
         return await this.find({ favorite: true});
     }   
     async deleteAll(){
-        const result = await this.staff.deleteMany({});
+        const result = await this.todo.deleteMany({});
         return result.deletedCount;
     }
 }
-module.exports = StaffService;
+module.exports = TodoService;

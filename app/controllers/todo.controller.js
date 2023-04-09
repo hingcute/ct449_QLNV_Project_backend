@@ -1,4 +1,4 @@
-const StaffService = require("../services/staff.service");
+const TodoService = require("../services/todo.service");
 const MongoDB = require ("../utils/mongodb.util");
 const ApiError = require("../api-error");
 
@@ -30,12 +30,12 @@ exports.create = async (req, res, next) =>{
     }
 
     try{
-        const staffservice = new StaffService(MongoDB.client);
-        const document = await staffservice.create(req.body);
+        const todoservice = new TodoService(MongoDB.client);
+        const document = await todoservice.create(req.body);
         return res.send(document);    
     } catch (error) {
         return next(
-          new ApiError(500, "Đã xảy ra lỗi khi thêm thông tin nhân sự")
+          new ApiError(500, "Đã xảy ra lỗi khi thêm thông tin lịch biểu")
         )
     }
 };
@@ -44,16 +44,16 @@ exports.findAll = async (req, res, next) => {
     let documents = [];
 
     try {
-        const staffService = new StaffService(MongoDB.client);
+        const todoService = new TodoService(MongoDB.client);
         const { name } = req.query;
         if (name) {
-            documents = await staffService.findByName(name);
+            documents = await todoService.findByName(name);
         } else {
-            documents = await staffService.find({});
+            documents = await todoService.find({});
         }
     } catch (error) {
         return next(
-            new ApiError(500, "Đã xảy ra lỗi khi thêm thông tin nhân sự")
+            new ApiError(500, "Đã xảy ra lỗi khi thêm thông tin lịch biểu")
         );
     }
 
@@ -62,83 +62,83 @@ exports.findAll = async (req, res, next) => {
 // Tìm liên hệ duy nhất với một id
 exports.findOne = async (req, res, next) => {
     try{
-        const staffService = new StaffService(MongoDB.client);
-        const document = await staffService.findById(req.params.id);
+        const todoService = new TodoService(MongoDB.client);
+        const document = await todoService.findById(req.params.id);
         if (!document){
-            return next(new ApiError(404, "Không tìm thấy nhân sự này"));
+            return next(new ApiError(404, "Không tìm thấy lịch biểu này"));
         }
         return res.send(document);
     }catch (error){
         return next(
             new ApiError(
                 500,
-                `Lỗi khi truy xuất nhân sự với id=${req.params.id}`
+                `Lỗi khi truy xuất lịch biểu với id=${req.params.id}`
             )
         );
     }
 }
-// Cập nhật một nhân sự theo id trong yêu cầu
+// Cập nhật một lịch biểu theo id trong yêu cầu
 exports.update = async (req, res, next) => {
     if (Object.keys(req.body).length === 0){
         return next(new ApiError(400, "Không được để trống dữ liệu cần cập nhật"));
     }
     try{
-        const staffService = new StaffService(MongoDB.client);
-        const document = await staffService.update(req.params.id, req.body);
+        const todoService = new TodoService(MongoDB.client);
+        const document = await todoService.update(req.params.id, req.body);
         if(!document){
-            return next(new ApiError(404, "Không tìm thấy nhân sự này"));
+            return next(new ApiError(404, "Không tìm thấy lịch biểu này"));
         }
-        return res.send({ message: "nhân sự đã được cập nhật thành công"});
+        return res.send({ message: "lịch biểu đã được cập nhật thành công"});
     }catch (error){
         return next(
-            new ApiError(500, `Lỗi khi cập nhật nhân sự với id=${req.params.id}`)
+            new ApiError(500, `Lỗi khi cập nhật lịch biểu với id=${req.params.id}`)
         );
     }
 };
-// Xóa một nhân sự với id được chỉ định theo yêu cầu
+// Xóa một lịch biểu với id được chỉ định theo yêu cầu
 exports.delete = async (req, res, next) => {
     try {
-        const staffService = new StaffService(MongoDB.client);
-        const document = await staffService.delete(req.params.id);
+        const todoService = new TodoService(MongoDB.client);
+        const document = await todoService.delete(req.params.id);
         if(!document) {
-            return next(new ApiError(404, "Không tìm thấy nhân sự này"));
+            return next(new ApiError(404, "Không tìm thấy lịch biểu này"));
         }
-        return res.send({message: "Xóa nhân sự thành công"});
+        return res.send({message: "Xóa lịch biểu thành công"});
     } catch (error) {
         return next(
             new ApiError(
                 500,
-                `Không thể xóa nhân sự với id=${req.params.id}`
+                `Không thể xóa lịch biểu với id=${req.params.id}`
             )
         );
     }
 };
-// Tìm tất cả các nhân sự yêu thích của người dùng
+// Tìm tất cả các lịch biểu yêu thích của người dùng
 exports.findAllFavorite = async (_req, res, next) => {
     try{
-        const staffService = new StaffService(MongoDB.client);
-        const documents = await staffService.findFavorite();
+        const todoService = new TodoService(MongoDB.client);
+        const documents = await todoService.findFavorite();
         return res.send(documents);
     }catch (error){
         return next(
             new ApiError(
                 500,
-                "Đã xảy ra lỗi khi truy xuất nhân sự yêu thích"
+                "Đã xảy ra lỗi khi truy xuất lịch biểu yêu thích"
             )
         );
     }
 };
-// Xóa tất cả nhân sự của người dùng khỏi cơ sở dữ liệu
+// Xóa tất cả lịch biểu của người dùng khỏi cơ sở dữ liệu
 exports.deleteAll = async (_req, res, next) => {
     try {
-        const staffService = new StaffService(MongoDB.client);
-        const deletedCount = await staffService.deleteAll();
+        const todoService = new TodoService(MongoDB.client);
+        const deletedCount = await todoService.deleteAll();
         return res.send({
-            message: `${deletedCount} Nhân sự đã được xóa thành công`,
+            message: `${deletedCount} lịch biểu đã được xóa thành công`,
         });
     }catch (error){
         return next(
-            new ApiError(500, "Đã xảy ra lỗi khi xóa tất cả nhân sự")
+            new ApiError(500, "Đã xảy ra lỗi khi xóa tất cả lịch biểu")
         );
     }
 };
