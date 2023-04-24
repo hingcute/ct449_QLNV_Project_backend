@@ -30,9 +30,9 @@ class TodoService {
         const cursor = await this.todo.find(filter);
         return await cursor.toArray();
     }
-    async findByName(name) {
+    async findByTitle(title) {
         return await this.find({
-            name: { $regex: new RegExp(name), $options: "i" },
+            title: { $regex: new RegExp(title), $options: "i" },
         });
     }
     async findById(id){

@@ -11,7 +11,7 @@ router.route("/")
 router.route("/favoritee")
     .get(todos.findAllFavorite);
 
-router.route("/:idd")
+router.route("/:id")
     .get(todos.findOne)
     .put(todos.update)
     .delete(todos.delete)

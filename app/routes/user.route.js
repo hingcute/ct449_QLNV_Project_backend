@@ -4,6 +4,7 @@ const users = require("../controllers/user.controller");
 const router = express.Router();
 
 router.route("/")
+  
     .get(users.findUser)
     .post(users.createUser)
 

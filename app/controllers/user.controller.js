@@ -26,7 +26,7 @@ exports.createUser = async (req, res, next) =>{
         )
     }
 };
-// Tìm liên hệ duy nhất với một id
+// Tìm user duy nhất với một id
 exports.findUser = async (req, res, next) => {
     try{
         const userservice = new UserService(MongoDB.client);
@@ -46,3 +46,23 @@ exports.findUser = async (req, res, next) => {
         );
     }
 }
+// Tìm user tất cả
+exports.findAllUser = async (req, res, next) => {
+    let documents = [];
+
+    try {
+        const userService = new UserService(MongoDB.client);
+        const { email } = req.query;
+        if (email) {
+            documents = await userService.findByEmail(email);
+        } else {
+            documents = await userService.find({});
+        }
+    } catch (error) {
+        return next(
+            new ApiError(500, "Đã xảy ra lỗi khi thêm thông tin nhân sự")
+        );
+    }
+
+    return res.send(documents);
+};
