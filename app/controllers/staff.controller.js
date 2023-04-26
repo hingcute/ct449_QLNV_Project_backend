@@ -59,7 +59,7 @@ exports.findAll = async (req, res, next) => {
 
     return res.send(documents);
 };
-// Tìm liên hệ duy nhất với một id
+// Tìm  duy nhất với một id
 exports.findOne = async (req, res, next) => {
     try{
         const staffService = new StaffService(MongoDB.client);
